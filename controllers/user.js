@@ -12,8 +12,6 @@ const register = (req, res) => {
         })
     }
 
-
-
     // User validation
     User.find({ $or: [
         {name: params.name.toLowerCase},
@@ -64,6 +62,29 @@ const register = (req, res) => {
     })
 }
 
+
+const login = (req, res) => {
+    let params = req.body;
+
+    User.findOne({email: params.email})
+    .select({"password":0})
+    .exec(async(error, user) => {
+        if(error || !user) {
+            return res.status(404).json({
+                status: "error",
+                message: "Error de conexión"
+            })
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Logeado",
+            user
+        })
+    })
+}
+
 module.export = {
-    register
+    register,
+    login
 }
